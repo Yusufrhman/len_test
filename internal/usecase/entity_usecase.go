@@ -9,6 +9,7 @@ import (
 
 type EntityRepository interface {
 	GetAll(ctx context.Context, entityType, status string) ([]entity.Entity, error)
+	GetByID(ctx context.Context, id string) (*entity.Entity, error)
 }
 
 type EntityUsecase struct {
@@ -33,6 +34,17 @@ func (u *EntityUsecase) GetAll(ctx context.Context, req dto.GetEntitiesRequest) 
 	}
 
 	return responses, nil
+}
+
+func (u *EntityUsecase) GetByID(ctx context.Context, id string) (*dto.EntityResponse, error) {
+	e, err := u.repository.GetByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	response := toEntityResponse(*e)
+
+	return &response, nil
 }
 
 func toEntityResponse(e entity.Entity) dto.EntityResponse {
