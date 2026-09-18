@@ -41,6 +41,17 @@ func (r *EntityRepository) GetAll(ctx context.Context, entityType, status string
 	return entities, nil
 }
 
+func (r *EntityRepository) Create(ctx context.Context, e *entity.Entity) error {
+	query := `
+		INSERT INTO entities (name, type, status, latitude, longitude)
+		VALUES ($1, $2, $3, $4, $5)
+		RETURNING id, created_at, updated_at
+	`
+
+	return r.db.QueryRowxContext(ctx, query, e.Name, e.Type, e.Status, e.Latitude, e.Longitude).
+		Scan(&e.ID, &e.CreatedAt, &e.UpdatedAt)
+}
+
 func (r *EntityRepository) GetByID(ctx context.Context, id string) (*entity.Entity, error) {
 	query := `SELECT ` + entityColumns + ` FROM entities WHERE id = $1`
 
