@@ -3,11 +3,13 @@ package main
 import (
 	"log"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	"github.com/Yusufrhman/len_test/backend/internal/config"
 	"github.com/Yusufrhman/len_test/backend/internal/database"
 	"github.com/Yusufrhman/len_test/backend/internal/handler"
+	"github.com/Yusufrhman/len_test/backend/internal/middleware"
 	"github.com/Yusufrhman/len_test/backend/internal/repository"
 	"github.com/Yusufrhman/len_test/backend/internal/usecase"
 )
@@ -27,6 +29,7 @@ func main() {
 	defer db.Close()
 
 	router := gin.Default()
+	router.Use(cors.New(middleware.CORS(cfg.CORSOrigins)))
 	api := router.Group("/api/v1")
 
 	entityRepository := repository.NewEntityRepository(db)
