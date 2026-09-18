@@ -31,7 +31,7 @@ func main() {
 
 	entityRepository := repository.NewEntityRepository(db)
 	entityUsecase := usecase.NewEntityUsecase(entityRepository)
-	handler.NewGinHandler(api, entityUsecase)
+	handler.NewEntityHandler(api, entityUsecase)
 
 	if err := router.Run(":" + cfg.AppPort); err != nil {
 		log.Fatalf("run server: %v", err)

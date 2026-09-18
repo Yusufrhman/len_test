@@ -17,19 +17,19 @@ type EntityUsecase interface {
 	Delete(ctx context.Context, id string) error
 }
 
-type GinHandler struct {
+type EntityHandler struct {
 	usecase EntityUsecase
 }
 
-func NewGinHandler(router *gin.RouterGroup, entityUsecase EntityUsecase) {
-	handler := &GinHandler{
+func NewEntityHandler(router *gin.RouterGroup, entityUsecase EntityUsecase) {
+	handler := &EntityHandler{
 		usecase: entityUsecase,
 	}
 
 	handler.registerRoutes(router)
 }
 
-func (h *GinHandler) registerRoutes(router *gin.RouterGroup) {
+func (h *EntityHandler) registerRoutes(router *gin.RouterGroup) {
 	router.GET("/entities", h.GetEntities)
 	router.GET("/entities/:id", h.GetEntity)
 	router.POST("/entities", h.CreateEntity)
@@ -37,7 +37,7 @@ func (h *GinHandler) registerRoutes(router *gin.RouterGroup) {
 	router.DELETE("/entities/:id", h.DeleteEntity)
 }
 
-func (h *GinHandler) GetEntities(c *gin.Context) {
+func (h *EntityHandler) GetEntities(c *gin.Context) {
 	var req dto.GetEntitiesRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
 		writeValidationError(c, err, req)
@@ -53,7 +53,7 @@ func (h *GinHandler) GetEntities(c *gin.Context) {
 	writeData(c, http.StatusOK, entities)
 }
 
-func (h *GinHandler) GetEntity(c *gin.Context) {
+func (h *EntityHandler) GetEntity(c *gin.Context) {
 	entity, err := h.usecase.GetByID(c.Request.Context(), c.Param("id"))
 	if err != nil {
 		writeError(c, err)
@@ -63,7 +63,7 @@ func (h *GinHandler) GetEntity(c *gin.Context) {
 	writeData(c, http.StatusOK, entity)
 }
 
-func (h *GinHandler) CreateEntity(c *gin.Context) {
+func (h *EntityHandler) CreateEntity(c *gin.Context) {
 	var req dto.CreateEntityRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		writeValidationError(c, err, req)
@@ -79,7 +79,7 @@ func (h *GinHandler) CreateEntity(c *gin.Context) {
 	writeData(c, http.StatusCreated, entity)
 }
 
-func (h *GinHandler) UpdateEntity(c *gin.Context) {
+func (h *EntityHandler) UpdateEntity(c *gin.Context) {
 	var req dto.UpdateEntityRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		writeValidationError(c, err, req)
@@ -95,7 +95,7 @@ func (h *GinHandler) UpdateEntity(c *gin.Context) {
 	writeData(c, http.StatusOK, entity)
 }
 
-func (h *GinHandler) DeleteEntity(c *gin.Context) {
+func (h *EntityHandler) DeleteEntity(c *gin.Context) {
 	if err := h.usecase.Delete(c.Request.Context(), c.Param("id")); err != nil {
 		writeError(c, err)
 		return

@@ -83,27 +83,27 @@ EntityUsecase interface
 Usecase implementation
 ```
 
-The handler also owns HTTP route registration. `NewGinHandler` accepts a `*gin.RouterGroup`, initializes the handler, and registers its routes. It does not return a value.
+The handler also owns HTTP route registration. `NewEntityHandler` accepts a `*gin.RouterGroup`, initializes the handler, and registers its routes. It does not return a value.
 
 Example:
 
 ```go
-type GinHandler struct {
+type EntityHandler struct {
     usecase usecase.EntityUsecase
 }
 
-func NewGinHandler(
+func NewEntityHandler(
     router *gin.RouterGroup,
     entityUsecase usecase.EntityUsecase,
 ) {
-    handler := &GinHandler{
+    handler := &EntityHandler{
         usecase: entityUsecase,
     }
 
     handler.registerRoutes(router)
 }
 
-func (h *GinHandler) registerRoutes(router *gin.RouterGroup) {
+func (h *EntityHandler) registerRoutes(router *gin.RouterGroup) {
     router.GET("/entities", h.GetEntities)
     router.GET("/entities/:id", h.GetEntity)
     router.POST("/entities", h.CreateEntity)
@@ -118,7 +118,7 @@ Therefore, route registration stays within the handler layer:
 Gin Router Group
        │
        ▼
- NewGinHandler(...)
+ NewEntityHandler(...)
        │
        ├── Initialize handler
        │
