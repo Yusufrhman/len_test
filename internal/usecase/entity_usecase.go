@@ -12,6 +12,7 @@ type EntityRepository interface {
 	GetByID(ctx context.Context, id string) (*entity.Entity, error)
 	Create(ctx context.Context, e *entity.Entity) error
 	Update(ctx context.Context, e *entity.Entity) error
+	Delete(ctx context.Context, id string) error
 }
 
 type EntityUsecase struct {
@@ -84,6 +85,10 @@ func (u *EntityUsecase) Update(ctx context.Context, id string, req dto.UpdateEnt
 	response := toEntityResponse(*e)
 
 	return &response, nil
+}
+
+func (u *EntityUsecase) Delete(ctx context.Context, id string) error {
+	return u.repository.Delete(ctx, id)
 }
 
 func toEntityResponse(e entity.Entity) dto.EntityResponse {

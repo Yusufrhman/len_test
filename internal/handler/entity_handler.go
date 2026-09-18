@@ -14,6 +14,7 @@ type EntityUsecase interface {
 	GetByID(ctx context.Context, id string) (*dto.EntityResponse, error)
 	Create(ctx context.Context, req dto.CreateEntityRequest) (*dto.EntityResponse, error)
 	Update(ctx context.Context, id string, req dto.UpdateEntityRequest) (*dto.EntityResponse, error)
+	Delete(ctx context.Context, id string) error
 }
 
 type GinHandler struct {
@@ -33,6 +34,7 @@ func (h *GinHandler) registerRoutes(router *gin.RouterGroup) {
 	router.GET("/entities/:id", h.GetEntity)
 	router.POST("/entities", h.CreateEntity)
 	router.PUT("/entities/:id", h.UpdateEntity)
+	router.DELETE("/entities/:id", h.DeleteEntity)
 }
 
 func (h *GinHandler) GetEntities(c *gin.Context) {
@@ -91,4 +93,13 @@ func (h *GinHandler) UpdateEntity(c *gin.Context) {
 	}
 
 	writeData(c, http.StatusOK, entity)
+}
+
+func (h *GinHandler) DeleteEntity(c *gin.Context) {
+	if err := h.usecase.Delete(c.Request.Context(), c.Param("id")); err != nil {
+		writeError(c, err)
+		return
+	}
+
+	c.Status(http.StatusNoContent)
 }
