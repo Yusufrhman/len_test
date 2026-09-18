@@ -7,6 +7,9 @@ import (
 
 	"github.com/Yusufrhman/len_test/backend/internal/config"
 	"github.com/Yusufrhman/len_test/backend/internal/database"
+	"github.com/Yusufrhman/len_test/backend/internal/handler"
+	"github.com/Yusufrhman/len_test/backend/internal/repository"
+	"github.com/Yusufrhman/len_test/backend/internal/usecase"
 )
 
 func main() {
@@ -24,6 +27,11 @@ func main() {
 	defer db.Close()
 
 	router := gin.Default()
+	api := router.Group("/api/v1")
+
+	entityRepository := repository.NewEntityRepository(db)
+	entityUsecase := usecase.NewEntityUsecase(entityRepository)
+	handler.NewGinHandler(api, entityUsecase)
 
 	if err := router.Run(":" + cfg.AppPort); err != nil {
 		log.Fatalf("run server: %v", err)
