@@ -63,6 +63,22 @@ func (r *EntityRepository) GetByID(ctx context.Context, id string) (*entity.Enti
 	return &e, nil
 }
 
+func (r *EntityRepository) Update(ctx context.Context, e *entity.Entity) error {
+	query := `
+		UPDATE entities
+		SET name = $1, type = $2, status = $3, latitude = $4, longitude = $5, updated_at = NOW()
+		WHERE id = $6
+		RETURNING created_at, updated_at
+	`
+
+	if err := r.db.QueryRowxContext(ctx, query, e.Name, e.Type, e.Status, e.Latitude, e.Longitude, e.ID).
+		Scan(&e.CreatedAt, &e.UpdatedAt); err != nil {
+		return translateError(err)
+	}
+
+	return nil
+}
+
 func translateError(err error) error {
 	if errors.Is(err, sql.ErrNoRows) {
 		return apperr.ErrEntityNotFound

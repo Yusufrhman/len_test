@@ -13,6 +13,7 @@ type EntityUsecase interface {
 	GetAll(ctx context.Context, req dto.GetEntitiesRequest) ([]dto.EntityResponse, error)
 	GetByID(ctx context.Context, id string) (*dto.EntityResponse, error)
 	Create(ctx context.Context, req dto.CreateEntityRequest) (*dto.EntityResponse, error)
+	Update(ctx context.Context, id string, req dto.UpdateEntityRequest) (*dto.EntityResponse, error)
 }
 
 type GinHandler struct {
@@ -31,6 +32,7 @@ func (h *GinHandler) registerRoutes(router *gin.RouterGroup) {
 	router.GET("/entities", h.GetEntities)
 	router.GET("/entities/:id", h.GetEntity)
 	router.POST("/entities", h.CreateEntity)
+	router.PUT("/entities/:id", h.UpdateEntity)
 }
 
 func (h *GinHandler) GetEntities(c *gin.Context) {
@@ -73,4 +75,20 @@ func (h *GinHandler) CreateEntity(c *gin.Context) {
 	}
 
 	writeData(c, http.StatusCreated, entity)
+}
+
+func (h *GinHandler) UpdateEntity(c *gin.Context) {
+	var req dto.UpdateEntityRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		writeValidationError(c, err, req)
+		return
+	}
+
+	entity, err := h.usecase.Update(c.Request.Context(), c.Param("id"), req)
+	if err != nil {
+		writeError(c, err)
+		return
+	}
+
+	writeData(c, http.StatusOK, entity)
 }

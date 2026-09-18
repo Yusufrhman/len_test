@@ -11,6 +11,7 @@ type EntityRepository interface {
 	GetAll(ctx context.Context, entityType, status string) ([]entity.Entity, error)
 	GetByID(ctx context.Context, id string) (*entity.Entity, error)
 	Create(ctx context.Context, e *entity.Entity) error
+	Update(ctx context.Context, e *entity.Entity) error
 }
 
 type EntityUsecase struct {
@@ -58,6 +59,25 @@ func (u *EntityUsecase) Create(ctx context.Context, req dto.CreateEntityRequest)
 func (u *EntityUsecase) GetByID(ctx context.Context, id string) (*dto.EntityResponse, error) {
 	e, err := u.repository.GetByID(ctx, id)
 	if err != nil {
+		return nil, err
+	}
+
+	response := toEntityResponse(*e)
+
+	return &response, nil
+}
+
+func (u *EntityUsecase) Update(ctx context.Context, id string, req dto.UpdateEntityRequest) (*dto.EntityResponse, error) {
+	e := &entity.Entity{
+		ID:        id,
+		Name:      req.Name,
+		Type:      req.Type,
+		Status:    req.Status,
+		Latitude:  *req.Latitude,
+		Longitude: *req.Longitude,
+	}
+
+	if err := u.repository.Update(ctx, e); err != nil {
 		return nil, err
 	}
 
