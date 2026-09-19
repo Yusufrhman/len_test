@@ -1,73 +1,85 @@
-# React + TypeScript + Vite
+# Atlas · Entity Management
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A map-based dashboard for managing geographic entities (vehicles, IoT devices
+and facilities). The app is built with React + TypeScript and follows the
+feature-based architecture described in [`frontend-architecture.md`](./frontend-architecture.md),
+against the REST contract in [`api-contract.md`](./api-contract.md).
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 19 + TypeScript + Vite
+- React Router (client-side routing)
+- TanStack Query (server state)
+- Axios (HTTP client)
+- Tailwind CSS v4
+- Leaflet.js + React Leaflet (maps, custom pins, location picker)
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+The backend is expected on port `8080`. This is configured in `.env`:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```text
+VITE_API_URL=http://localhost:8080/api/v1
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Copy `.env.example` to `.env` if you need to point at a different backend.
+
+## Scripts
+
+| Script | Description |
+|---|---|
+| `npm run dev` | Start the Vite dev server |
+| `npm run build` | Type-check and build for production |
+| `npm run preview` | Preview the production build |
+| `npm run lint` | Run ESLint |
+
+## Features
+
+- **Map-first dashboard** — entities are rendered on a Leaflet map with
+  type-specific custom pins, selection highlighting and auto fit-to-bounds.
+- **Search & filters** — filter by entity type and status (sent to the API),
+  plus instant client-side name search.
+- **Entity details** — status/type badges, IDs, timestamps and copyable
+  coordinates; shown as a side panel on desktop and a bottom sheet on mobile.
+- **Create / edit / delete** — full CRUD with optimistic feedback via toasts
+  and a confirmation dialog for destructive actions.
+- **Map-based location picking** — create and edit forms never ask for manual
+  latitude/longitude. Users click the map, drag the pin, or use "Locate" to
+  drop a point; coordinates stay read-only in the UI.
+- **Responsive layout** — collapsible list drawer and bottom-sheet detail on
+  small screens, a two-pane layout on large screens.
+
+## Project Structure
+
+```text
+src/
+├── features/
+│   └── entity/
+│       ├── components/      # EntityMap, EntityList, EntityDetail, EntityForm, LocationPicker
+│       ├── hooks/useEntity.ts
+│       ├── pages/           # EntityPage, CreateEntityPage, EditEntityPage
+│       ├── service/entity.service.ts
+│       └── types/index.ts
+├── components/
+│   ├── layout/              # AppHeader
+│   └── ui/                  # Button, Input, Select, Field, Badge, dialogs, toast
+├── lib/
+│   ├── axios.ts
+│   ├── api-error.ts
+│   ├── query-client.ts
+│   └── utils.ts
+├── routes/index.tsx
+├── App.tsx
+└── main.tsx
+```
+
+## Data Flow
+
+```text
+Pages → Components → useEntity (TanStack Query) → entity.service (Axios) → Go REST API
 ```
