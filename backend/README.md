@@ -50,7 +50,7 @@ Base URL: `/api/v1`
 | `PUT` | `/entities/{id}` | Update entity | `200` |
 | `DELETE` | `/entities/{id}` | Delete entity | `204` |
 
-See [api-contract.md](api-contract.md) for the full contract and [architecture.md](architecture.md) for the layered design.
+See [api-contract.md](../api-contract.md) for the full contract and [architecture.md](architecture.md) for the layered design.
 
 ### Examples
 
