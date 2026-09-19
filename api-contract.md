@@ -100,8 +100,8 @@ All errors follow a single envelope:
     "fields": {
       "name": "name is required",
       "type": "type must be one of: vehicle, iot_device, facility",
-      "latitude": "must be between -90 and 90",
-      "longitude": "must be between -180 and 180"
+      "latitude": "latitude must be between -90 and 90",
+      "longitude": "longitude must be between -180 and 180"
     }
   }
 }
@@ -124,6 +124,7 @@ Error messages per validation rule:
 | Required | `<field> is required` | `name is required` |
 | Type mismatch | `<field> must be a <type>` | `latitude must be a number` |
 | Range | `<field> must be between <min> and <max>` | `latitude must be between -90 and 90` |
+| Max length | `<field> must be at most <n> characters` | `name must be at most 255 characters` |
 | Allowed values | `<field> must be one of: <values>` | `type must be one of: vehicle, iot_device, facility` |
 
 ## Endpoints
@@ -330,6 +331,11 @@ The following fields are required when creating or updating an entity:
 - `status`
 - `latitude`
 - `longitude`
+
+### Field Lengths
+
+- `name` must be at most 255 characters and cannot be blank.
+- `status` must be at most 50 characters.
 
 ### Geographic Coordinates
 

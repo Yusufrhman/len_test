@@ -24,9 +24,14 @@ const entityFormSchema = z.object({
     .string()
     .trim()
     .min(1, "name is required")
-    .max(120, "name must be at most 120 characters"),
-  type: z.enum(ENTITY_TYPES),
-  status: z.string().min(1, "status is required"),
+    .max(255, "name must be at most 255 characters"),
+  type: z.enum(ENTITY_TYPES, {
+    error: `type must be one of: ${ENTITY_TYPES.join(", ")}`,
+  }),
+  status: z
+    .string()
+    .min(1, "status is required")
+    .max(50, "status must be at most 50 characters"),
   latitude: z
     .number()
     .min(-90, "latitude must be between -90 and 90")

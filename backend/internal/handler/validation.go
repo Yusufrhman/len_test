@@ -7,8 +7,19 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
 )
+
+func init() {
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		_ = v.RegisterValidation("notblank", validateNotBlank)
+	}
+}
+
+func validateNotBlank(field validator.FieldLevel) bool {
+	return strings.TrimSpace(field.Field().String()) != ""
+}
 
 func validationErrorFields(err error, req any) map[string]string {
 	var validationErrs validator.ValidationErrors
@@ -48,7 +59,7 @@ func validationFields(errs validator.ValidationErrors, reqType reflect.Type) map
 
 func validationMessage(name string, fieldErr validator.FieldError, reqType reflect.Type) string {
 	switch fieldErr.Tag() {
-	case "required":
+	case "required", "notblank":
 		return fmt.Sprintf("%s is required", name)
 	case "oneof":
 		return fmt.Sprintf("%s must be one of: %s", name, strings.ReplaceAll(fieldErr.Param(), " ", ", "))
@@ -58,7 +69,11 @@ func validationMessage(name string, fieldErr validator.FieldError, reqType refle
 			return fmt.Sprintf("%s must be between %s and %s", name, min, max)
 		}
 
-		return fmt.Sprintf("%s must be %s %s", name, fieldErr.Tag(), fieldErr.Param())
+		if fieldErr.Tag() == "max" {
+			return fmt.Sprintf("%s must be at most %s characters", name, fieldErr.Param())
+		}
+
+		return fmt.Sprintf("%s must be at least %s characters", name, fieldErr.Param())
 	default:
 		return fmt.Sprintf("%s is invalid", name)
 	}
