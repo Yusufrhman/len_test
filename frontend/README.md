@@ -3,7 +3,10 @@
 A map-based dashboard for managing geographic entities (vehicles, IoT devices
 and facilities). The app is built with React + TypeScript and follows the
 feature-based architecture described in [`frontend-architecture.md`](./frontend-architecture.md),
-against the REST contract in [`api-contract.md`](./api-contract.md).
+against the REST contract in [`../api-contract.md`](../api-contract.md).
+
+> This app is part of a monorepo. See the [root README](../README.md) for
+> full-stack setup and the reasoning behind the libraries used.
 
 ## Tech Stack
 
@@ -16,18 +19,25 @@ against the REST contract in [`api-contract.md`](./api-contract.md).
 
 ## Getting Started
 
+The frontend needs the backend running (see the
+[root README](../README.md#how-to-run) for the full-stack setup, including the
+database and migrations).
+
 ```bash
+cp .env.example .env
 npm install
 npm run dev
 ```
 
-The backend is expected on port `8080`. This is configured in `.env`:
+The dev server runs at `http://localhost:5173`. The backend is expected on port
+`8080`; this is configured in `.env`:
 
 ```text
 VITE_API_URL=http://localhost:8080/api/v1
 ```
 
-Copy `.env.example` to `.env` if you need to point at a different backend.
+Copy `.env.example` to `.env` if you need to point at a different backend, and
+make sure the backend's `CORS_ORIGINS` includes `http://localhost:5173`.
 
 ## Scripts
 
