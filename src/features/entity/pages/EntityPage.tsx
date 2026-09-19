@@ -141,7 +141,7 @@ export function EntityPage() {
       />
 
       <div className="relative flex min-h-0 flex-1">
-        <aside className="hidden w-[380px] shrink-0 overflow-hidden border-r border-slate-200 bg-white lg:block">
+        <aside className="hidden w-[360px] shrink-0 overflow-hidden border-r border-slate-200 bg-white lg:block xl:w-[380px]">
           <EntityList {...listProps} />
         </aside>
 
@@ -198,7 +198,7 @@ export function EntityPage() {
           ) : null}
 
           {selectedEntity ? (
-            <div className="absolute top-4 right-4 bottom-4 z-[1000] hidden w-[360px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl lg:block">
+            <div className="absolute top-4 right-4 bottom-4 z-[1000] hidden w-[340px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl lg:block xl:w-[360px]">
               <EntityDetail
                 entity={selectedEntity}
                 onClose={() => setSelectedId(null)}
@@ -236,6 +236,7 @@ export function EntityPage() {
           drawerOpen ? "" : "pointer-events-none",
         )}
         aria-hidden={!drawerOpen}
+        inert={!drawerOpen}
       >
         <div
           className={cn(
