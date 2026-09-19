@@ -60,12 +60,13 @@ Edit `backend/.env` and make sure these values match your setup:
 
 ```dotenv
 APP_PORT=8080
+GIN_MODE=debug
 DATABASE_URL=postgres://postgres:postgres@localhost:5432/len_db?sslmode=disable
 CORS_ORIGINS=http://localhost:5173
 ```
 
 > **Important:** `CORS_ORIGINS` must include the frontend origin. Vite serves on
-> `http://localhost:5173`or set it to `*` to allow any origin during development.
+> `http://localhost:5173` or set it to `*` to allow any origin during development.
 
 Create the database, apply the schema and seed sample data:
 

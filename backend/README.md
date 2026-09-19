@@ -36,7 +36,8 @@ The server listens on `APP_PORT` (default `8080`).
 |---|---:|---|---|
 | `APP_PORT` | No | `8080` | HTTP server port |
 | `DATABASE_URL` | Yes | - | PostgreSQL connection string |
-| `GIN_MODE` | No | `release` | Gin mode (`debug`, `release`, `test`) |
+| `GIN_MODE` | No | `debug` | Gin mode (`debug`, `release`, `test`) |
+| `CORS_ORIGINS` | No | `*` | Comma-separated list of allowed origins (e.g. `http://localhost:5173`) |
 
 ## API
 

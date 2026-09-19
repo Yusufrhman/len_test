@@ -1,4 +1,4 @@
-# Atlas · Entity Management
+# Len · Entity Management
 
 A map-based dashboard for managing geographic entities (vehicles, IoT devices
 and facilities). The app is built with React + TypeScript and follows the
