@@ -106,7 +106,9 @@ export function EntityForm({
   const fieldError = (field: string) => errors[field] ?? serverError?.fields?.[field];
 
   const generalError =
-    serverError && !serverError.fields ? serverError : null;
+    serverError && Object.keys(serverError.fields ?? {}).length === 0
+      ? serverError
+      : null;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
